@@ -2,9 +2,20 @@ version: '2.3'
 
 services:
 
+  postgresdb:
+    image: postgres
+    networks:
+      - internal
+    ports:
+      - 5432:5432
+    volumes:
+      - ".docker/postgresdb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+    environment:
+      POSTGRES_PASSWORD: postgres
+
   conductor-server:
     environment:
-      - CONFIG_PROP=config-mysql-grpc.properties
+      - CONFIG_PROP=config-postgresql-grpc.properties
     image: conductor:server
     build:
       context: ../../
@@ -17,8 +28,8 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
-      mysql:
-        condition: service_healthy
+#      mysql:
+#        condition: service_healthy
 
   conductor-ui:
     environment:
@@ -33,27 +44,6 @@ services:
       - 5000:5000
     depends_on:
       - conductor-server
-
-  mysql:
-    image: mysql:5.6
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: conductor
-      MYSQL_USER: conductor
-      MYSQL_PASSWORD: password
-    volumes:
-      - type: volume
-        source: conductor_mysql
-        target: /var/lib/mysql
-    networks:
-      - internal
-    ports:
-      - 3306:3306
-    healthcheck:
-      test: timeout 5 bash -c 'cat < /dev/null > /dev/tcp/localhost/3306'
-      interval: 5s
-      timeout: 5s
-      retries: 12
 
   # https://www.elastic.co/guide/en/elasticsearch/reference/5.6/docker.html
   elasticsearch:
@@ -75,7 +65,7 @@ services:
       retries: 12
 
 volumes:
-  conductor_mysql:
+  conductor_postrges:
 
 networks:
   internal:
