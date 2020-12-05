@@ -133,6 +133,9 @@ public interface Configuration {
     String WORKFLOW_REPAIR_SERVICE_ENABLED = "workflow.repairservice.enabled";
     boolean WORKFLOW_REPAIR_SERVICE_ENABLED_DEFAULT_VALUE = false;
 
+    String WORKFLOW_COMPLETION_LISTENER_URL = "workflow.listener.url";
+    String WORKFLOW_COMPLETION_LISTENER_URL_DEFAULT_VALUE = "http://localhost:8081/runs/all?runId=%s&status=%s";
+
     //TODO add constants for input/output external payload related properties.
 
     default DB getDB() {
@@ -388,6 +391,10 @@ public interface Configuration {
      */
     default boolean isWorkflowRepairServiceEnabled() {
         return getBooleanProperty(WORKFLOW_REPAIR_SERVICE_ENABLED, WORKFLOW_REPAIR_SERVICE_ENABLED_DEFAULT_VALUE);
+    }
+
+    default String getWorkflowCompletionListenerUrl() {
+        return getProperty(WORKFLOW_COMPLETION_LISTENER_URL, WORKFLOW_COMPLETION_LISTENER_URL_DEFAULT_VALUE);
     }
 
     /**

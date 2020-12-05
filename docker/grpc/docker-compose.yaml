@@ -9,6 +9,9 @@ services:
     ports:
       - 5432:5432
     volumes:
+      - type: volume
+        source: conductor_postrges
+        target: /var/lib/postgres
       - ".docker/postgresdb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
     environment:
       POSTGRES_PASSWORD: postgres
